@@ -6,10 +6,17 @@
     <Nullable>enable</Nullable>
     <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
     <StaticWebAssetProjectMode>Default</StaticWebAssetProjectMode>
+
+	  <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
+	  <BlazorCacheBootResources>false</BlazorCacheBootResources>
+	  <StaticWebAssetFingerprintingEnabled>false</StaticWebAssetFingerprintingEnabled>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.0" />
+    <PackageReference Include="Bit.Bswup" Version="9.2.0" />
+	  <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.js" />
+
+	  <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.0" />
   </ItemGroup>
 
 </Project>

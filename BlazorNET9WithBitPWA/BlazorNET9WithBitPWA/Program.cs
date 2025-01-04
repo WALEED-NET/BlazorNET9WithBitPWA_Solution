@@ -27,7 +27,24 @@ app.UseHttpsRedirection();
 
 app.UseAntiforgery();
 
+
 app.MapStaticAssets();
+app.UseStaticFiles(new StaticFileOptions
+{
+    OnPrepareResponse = ctx =>
+    {
+        if (builder.Environment.IsDevelopment() is false)
+        {
+            ctx.Context.Response.GetTypedHeaders().CacheControl = new()
+            {
+                Public = true,
+                NoTransform = true,
+                MaxAge = TimeSpan.FromDays(7)
+            };
+        }
+    }
+});
+
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()

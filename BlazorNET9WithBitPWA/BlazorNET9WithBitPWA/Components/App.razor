@@ -1,4 +1,18 @@
-﻿<!DOCTYPE html>
+﻿@using Bit.Bswup
+@code {
+    [CascadingParameter] HttpContext HttpContext { get; set; } = default!;
+}
+
+@{
+    var noPrerender = HttpContext.Request.Query["no-prerender"].Count > 0;
+    IComponentRenderMode renderMode = noPrerender
+        ? new InteractiveWebAssemblyRenderMode(prerender: false)
+        : new InteractiveAutoRenderMode(prerender: true); // Choose either InteractiveAuto, InteractiveWebAssembly or InteractiveServer with prerender true or false.
+}
+
+
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -8,14 +22,20 @@
     <link rel="stylesheet" href="@Assets["lib/bootstrap/dist/css/bootstrap.min.css"]" />
     <link rel="stylesheet" href="@Assets["app.css"]" />
     <link rel="stylesheet" href="@Assets["BlazorNET9WithBitPWA.styles.css"]" />
+    <link rel="manifest" href="manifest.json" />
+
     <ImportMap />
     <link rel="icon" type="image/png" href="favicon.png" />
-    <HeadOutlet @rendermode="InteractiveAuto" />
+
+    <HeadOutlet @rendermode="renderMode" />
 </head>
 
 <body>
-    <Routes @rendermode="InteractiveAuto" />
-    <script src="_framework/blazor.web.js"></script>
+    <Routes @rendermode="renderMode" />
+    <script src="@Assets["_framework/blazor.web.js"]" autostart="false"></script>
+    <script src="@Assets["_content/Bit.Bswup/bit-bswup.js"]"></script>
+    <script src="@Assets["_content/Bit.Bswup/bit-bswup.progress.js"]"></script>
+    <AppBswupProgressBar />
 </body>
 
 </html>
