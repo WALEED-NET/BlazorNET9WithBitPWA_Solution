@@ -1,4 +1,4 @@
-html, body {
+﻿html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
@@ -58,3 +58,25 @@ h1:focus {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
+
+/* site.css: Global styles for all components and pages */
+
+body {
+    background: #f6f8f8;
+    direction: rtl;
+    font-family: 'Tajawal', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #404344;
+}
+
+:root {
+    --primary: #50b4aa;
+    --secondary: #404344;
+    --muted: #cacfd0;
+    --accent: #b65751;
+    --gray: #f6f8f8;
+}
+
+/* Add more global resets and base classes below */
+

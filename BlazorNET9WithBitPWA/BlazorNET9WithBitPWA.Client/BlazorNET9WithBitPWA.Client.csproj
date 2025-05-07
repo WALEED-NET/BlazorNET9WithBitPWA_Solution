@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -9,7 +9,7 @@
 
 	  <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
 	  <BlazorCacheBootResources>false</BlazorCacheBootResources>
-	  <StaticWebAssetFingerprintingEnabled>false</StaticWebAssetFingerprintingEnabled>
+	  <StaticWebAssetFingerprintingEnabled>true</StaticWebAssetFingerprintingEnabled>
   </PropertyGroup>
 
   <ItemGroup>
