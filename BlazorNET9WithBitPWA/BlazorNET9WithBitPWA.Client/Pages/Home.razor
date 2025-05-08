@@ -1,17 +1,178 @@
 ﻿@page "/"
 
-<PageTitle>Home</PageTitle>
+<!-- Hero Banner -->
+<div class="hero-banner bg-primary text-white p-4 mb-3">
+    <div class="container">
+        <h2>Summer Collection</h2>
+        <p class="lead">Up to 50% off on selected items</p>
+        <a href="/summer-sale" class="btn btn-outline-light">Shop Now</a>
+    </div>
+</div>
 
-<h1>Hello, world!</h1>
-<b></b>
+<div class="container">
+    <!-- Categories -->
+    <div class="mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0">Categories</h5>
+            <a href="/categories" class="text-decoration-none">See all</a>
+        </div>
+        <div class="row g-2">
+            @foreach (var category in categories)
+            {
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm h-100" @onclick="() => NavigateToCategory(category.Id)">
+                        <img src="@category.ImageUrl" class="card-img-top p-3" alt="@category.Name">
+                        <div class="card-body text-center p-2">
+                            <h6 class="card-title mb-0">@category.Name</h6>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
 
-Render : @RendererInfo.Name
+    <!-- Featured Products -->
+    <div class="mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0">Featured Products</h5>
+            <a href="/featured" class="text-decoration-none">See all</a>
+        </div>
+        <div class="row g-3">
+            @foreach (var product in featuredProducts)
+            {
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="position-relative">
+                            <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name">
+                            @if (product.IsNew)
+                            {
+                                <span class="badge bg-danger position-absolute top-0 start-0 m-2">New</span>
+                            }
+                            <button class="btn btn-sm btn-light position-absolute top-0 end-0 m-2 rounded-circle"
+                                    @onclick="() => ToggleFavorite(product)">
+                                <i class="bi @(product.IsFavorite ? "bi-heart-fill text-danger" : "bi-heart")"></i>
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <h6 class="card-title">@product.Name</h6>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="text-danger fw-bold">@product.Price.ToString("C")</span>
+                                    @if (product.OriginalPrice > product.Price)
+                                    {
+                                        <span class="text-decoration-line-through text-muted small ms-1">@product.OriginalPrice.ToString("C")</span>
+                                    }
+                                </div>
+                                <div>
+                                    <i class="bi bi-star-fill text-warning small"></i>
+                                    <span class="small">@product.Rating.ToString("0.0")</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-white border-0">
+                            <button class="btn btn-primary w-100" @onclick="() => AddToCart(product)">
+                                <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
 
+    <!-- Special Offer -->
+    <div class="card bg-light border-0 mb-4">
+        <div class="card-body text-center p-4">
+            <h5>Special Offer</h5>
+            <p>Get 20% off on your first order</p>
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" value="WELCOME20" readonly>
+                <button class="btn btn-primary" type="button">Copy</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-<b></b>
-Welcome to your new app. @DateTime.Now xx 984 صلاهخعثص
+@code {
+    private List<Category> categories = new()
+    {
+        new Category { Id = 1, Name = "Electronics", ImageUrl = "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=500&auto=format&fit=crop" },
+        new Category { Id = 2, Name = "Fashion", ImageUrl = "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=500&auto=format&fit=crop" },
+        new Category { Id = 3, Name = "Home", ImageUrl = "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=500&auto=format&fit=crop" },
+        new Category { Id = 4, Name = "Beauty", ImageUrl = "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=500&auto=format&fit=crop" }
+    };
 
-a1
-2
-3
-4
+    private List<Product> featuredProducts = new()
+       {
+           new Product {
+               Id = 1,
+               Name = "Wireless Headphones",
+               Price = 99.99m,
+               OriginalPrice = 129.99m,
+               Rating = 4.5f,
+               ImageUrl = "https://images.unsplash.com/photo-1620012253295-c15cc3e65df4?q=80&w=500&auto=format&fit=crop",
+               IsNew = true
+           },
+           new Product {
+               Id = 2,
+               Name = "Smart Watch",
+               Price = 199.99m,
+               OriginalPrice = 249.99m,
+               Rating = 4.8f,
+               ImageUrl = "https://images.unsplash.com/photo-1620012253295-c15cc3e65df4?q=80&w=500&auto=format&fit=crop",
+               IsFavorite = true
+           },
+           new Product {
+               Id = 3,
+               Name = "Running Shoes",
+               Price = 79.99m,
+               Rating = 4.2f,
+               ImageUrl = "https://images.unsplash.com/photo-1620012253295-c15cc3e65df4?q=80&w=500&auto=format&fit=crop"
+           },
+           new Product {
+               Id = 4,
+               Name = "Backpack",
+               Price = 49.99m,
+               OriginalPrice = 59.99m,
+               Rating = 3.9f,
+               ImageUrl = "https://images.unsplash.com/photo-1620012253295-c15cc3e65df4?q=80&w=500&auto=format&fit=crop",
+               IsNew = true
+           }
+       };
+
+    private void NavigateToCategory(int categoryId)
+    {
+        NavigationManager.NavigateTo($"/category/{categoryId}");
+    }
+
+    private void AddToCart(Product product)
+    {
+        // Add to cart logic
+    }
+
+    private void ToggleFavorite(Product product)
+    {
+        product.IsFavorite = !product.IsFavorite;
+    }
+
+    public class Category
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string ImageUrl { get; set; }
+    }
+
+    public class Product
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public decimal Price { get; set; }
+        public decimal OriginalPrice { get; set; }
+        public float Rating { get; set; }
+        public string ImageUrl { get; set; }
+        public bool IsNew { get; set; }
+        public bool IsFavorite { get; set; }
+    }
+
+    [Inject] private NavigationManager NavigationManager { get; set; }
+}

@@ -1,29 +1,204 @@
 ﻿@inherits LayoutComponentBase
+@inject IJSRuntime JSRuntime 
+@inject NavigationManager NavigationManager 
 
-<div class="page">
-    <div class="sidebar">
-    <b></b>
+<script>
+   function initializeSidebar(sidebarRef) {
+    return new bootstrap.Offcanvas(sidebarRef);
+}
 
-    Render : @RendererInfo.Name
+function toggleSidebar(sidebarRef) {
+    const sidebar = bootstrap.Offcanvas.getInstance(sidebarRef);
+    if (sidebar) {
+        sidebar.toggle();
+    }
+}
 
+// Make functions available globally
+window.sidebarFunctions = {
+    initializeSidebar,
+    toggleSidebar
+};
+</script>
 
-    <b></b>
-        <NavMenu />
+<style>
+    /* Mobile-first styles */
+.hero-banner {
+    background: linear-gradient(135deg, #6e8efb, #a777e3);
+    border-radius: 0 0 20px 20px;
+}
+
+.card {
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+/* Bottom navigation styling */
+.navbar {
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.navbar .btn-link {
+    padding: 0.5rem;
+    text-decoration: none;
+}
+
+.navbar .btn-link.active {
+    color: #0d6efd !important;
+}
+
+/* Main content padding to account for bottom nav */
+main {
+    padding-bottom: 80px;
+}
+
+/* Tablet and desktop styles */
+@@media (min-width: 992px) {
+    .navbar {
+        display: none;
+    }
+    
+    main {
+        padding-bottom: 0;
+    }
+}
+
+/* Bootstrap icons size adjustment */
+.bi {
+    font-size: 1.2rem;
+}
+</style>
+
+<div class="d-flex flex-column min-vh-100">
+    <!-- Top Header -->
+    <header class="sticky-top bg-white shadow-sm">
+        <div class="container-fluid">
+            <div class="d-flex align-items-center py-2">
+                <button class="btn btn-link text-dark" @onclick="ToggleSidebar">
+                    <i class="bi bi-list fs-4"></i>
+                </button>
+                <div class="flex-grow-1 text-center">
+                    <a class="navbar-brand fw-bold" href="/">SleekShop</a>
+                </div>
+                <div>
+                    <a href="/search" class="btn btn-link text-dark">
+                        <i class="bi bi-search fs-5"></i>
+                    </a>
+                    <a href="/cart" class="btn btn-link text-dark position-relative">
+                        <i class="bi bi-cart fs-5"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            @cartItemsCount
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="sidebar" @ref="sidebarRef">
+        <div class="offcanvas-header border-bottom">
+            <h5 class="offcanvas-title">Menu</h5>
+            <button type="button" class="btn-close text-reset" @onclick="ToggleSidebar"></button>
+        </div>
+        <div class="offcanvas-body">
+            <nav class="nav flex-column">
+                <a class="nav-link active" href="/">
+                    <i class="bi bi-house-door me-2"></i>Home
+                </a>
+                <a class="nav-link" href="/categories">
+                    <i class="bi bi-grid me-2"></i>Categories
+                </a>
+                <a class="nav-link" href="/deals">
+                    <i class="bi bi-percent me-2"></i>Deals
+                </a>
+                <a class="nav-link" href="/account">
+                    <i class="bi bi-person me-2"></i>Account
+                </a>
+                <a class="nav-link" href="/settings">
+                    <i class="bi bi-gear me-2"></i>Settings
+                </a>
+            </nav>
+        </div>
     </div>
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
-            @Body
-        </article>
+    <!-- Main Content -->
+    <main class="flex-grow-1 pb-5">
+        @Body
     </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="navbar fixed-bottom navbar-light bg-white border-top d-lg-none">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-around w-100">
+                <a href="/" class="btn btn-link text-dark @GetActiveClass("/")">
+                    <div class="d-flex flex-column align-items-center">
+                        <i class="bi bi-house fs-5"></i>
+                        <small>Home</small>
+                    </div>
+                </a>
+                <a href="/categories" class="btn btn-link text-dark @GetActiveClass("/categories")">
+                    <div class="d-flex flex-column align-items-center">
+                        <i class="bi bi-grid fs-5"></i>
+                        <small>Categories</small>
+                    </div>
+                </a>
+                <a href="/search" class="btn btn-link text-dark @GetActiveClass("/search")">
+                    <div class="d-flex flex-column align-items-center">
+                        <i class="bi bi-search fs-5"></i>
+                        <small>Search</small>
+                    </div>
+                </a>
+                <a href="/favorites" class="btn btn-link text-dark @GetActiveClass("/favorites")">
+                    <div class="d-flex flex-column align-items-center">
+                        <i class="bi bi-heart fs-5"></i>
+                        <small>Favorites</small>
+                    </div>
+                </a>
+                <a href="/cart" class="btn btn-link text-dark @GetActiveClass("/cart")">
+                    <div class="d-flex flex-column align-items-center">
+                        <i class="bi bi-cart fs-5"></i>
+                        <small>Cart</small>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </nav>
 </div>
 
-<div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
-</div>
+@code {
+    private int cartItemsCount = 3;
+    private ElementReference sidebarRef;
+    private bool sidebarInitialized = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !sidebarInitialized)
+        {
+            await JSRuntime.InvokeVoidAsync("sidebarFunctions.initializeSidebar", sidebarRef);
+            sidebarInitialized = true;
+        }
+    }
+
+    private async Task ToggleSidebar()
+    {
+        await JSRuntime.InvokeVoidAsync("sidebarFunctions.toggleSidebar", sidebarRef);
+    }
+
+
+   
+
+    private string GetActiveClass(string path)
+    {
+        return NavigationManager.Uri.EndsWith(path) ? "active" : "";
+    }
+
+   
+}
+
